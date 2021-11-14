@@ -4,14 +4,12 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/willgarrison/go-ssm/pkg/output"
 	"github.com/willgarrison/go-ssm/pkg/ui"
 )
 
 var (
-	windowRect     pixel.Rect = pixel.R(0, 0, 1200, 900)
-	inputGridRect  pixel.Rect = pixel.R(200.1, 0.1, 1200, 300)
-	outputGridRect pixel.Rect = pixel.R(0.1, 300.1, 1200, 900)
+	windowRect pixel.Rect = pixel.R(0, 0, 940, 940)
+	ssmRect    pixel.Rect = pixel.R(60.1, 60.1, 880, 880)
 )
 
 func main() {
@@ -20,16 +18,26 @@ func main() {
 
 func run() {
 
-	midiOutput, err := output.NewMidiOutput()
-	if err != nil {
-		panic(err.Error())
+	// midiOutput, err := output.NewMidiOutput()
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// defer midiOutput.Driver.Close()
+
+	pattern := []string{
+		"E", "G", "B", "B", "B",
+		"A", "C", "B", "A", "G", "G",
+		"A", "B", "G", "E", "G", "A", "F#", "E", "D", "E", "E",
 	}
-	defer midiOutput.Driver.Close()
+
+	// pattern := []string{
+	// 	"C", "C", "F", "F", "C", "C", "G", "G",
+	// 	"C", "C", "C", "C", "C", "C", "G", "C",
+	// }
 
 	// UI
 	win := ui.NewWindow(windowRect)
-	inputGrid := ui.NewInputGrid(inputGridRect)
-	outputGrid := ui.NewOutputGrid(outputGridRect)
+	ssm := ui.NewSSM(ssmRect, pattern)
 
 	imdBatch := imdraw.New(nil)
 
@@ -40,15 +48,16 @@ func run() {
 		imdBatch.Clear()
 
 		// Update
-		inputGrid.Update(win)
-		outputGrid.Update(win)
+		ssm.Update(win)
 
 		// Draw to batch
-		inputGrid.DrawTo(imdBatch)
-		outputGrid.DrawTo(imdBatch)
+		ssm.DrawTo(imdBatch)
 
 		// Draw to window buffer
 		imdBatch.Draw(win)
+
+		// Draw text to window buffer
+		ssm.DrawTextTo(win)
 
 		// Update window
 		win.Update()
