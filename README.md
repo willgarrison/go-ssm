@@ -1,4 +1,7 @@
 # Self-similarity Matrix
+
+![SSM](/.github/ssm.png)
+
 This is a dynamic self-similarity matrix. It supports lettters, numbers and most symbol characters.
 
 ## Instructions:
