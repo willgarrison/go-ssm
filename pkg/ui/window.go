@@ -5,10 +5,10 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 )
 
-func NewWindow(rect pixel.Rect) *pixelgl.Window {
+func NewWindow(title string, rect pixel.Rect) *pixelgl.Window {
 
 	config := pixelgl.WindowConfig{
-		Title:     "Pixel",
+		Title:     title,
 		Bounds:    rect,
 		Resizable: false,
 		VSync:     true,

@@ -6,7 +6,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/text"
 	"github.com/golang/freetype/truetype"
-	"golang.org/x/image/font/gofont/goregular"
+	"golang.org/x/image/font/gofont/gomono"
 )
 
 type Typography struct {
@@ -19,7 +19,7 @@ func NewTypography(fontSize float64) *Typography {
 	typ := new(Typography)
 
 	// Go Font
-	ttf, err := truetype.Parse(goregular.TTF)
+	ttf, err := truetype.Parse(gomono.TTF)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,15 @@ func NewTypography(fontSize float64) *Typography {
 	return typ
 }
 
-func (typ *Typography) DrawTextToBatch(s string, vec pixel.Vec, clr color.Color, txtBatch *pixel.Batch, txt *text.Text) {
+func (typ *Typography) DrawRuneToBatch(r rune, vec pixel.Vec, clr color.Color, txtBatch *pixel.Batch, txt *text.Text) {
+	txt.Clear()
+	txt.Color = clr
+	txt.Dot = vec
+	txt.WriteRune(r)
+	txt.Draw(txtBatch, pixel.IM)
+}
+
+func (typ *Typography) DrawStringToBatch(s string, vec pixel.Vec, clr color.Color, txtBatch *pixel.Batch, txt *text.Text) {
 	txt.Clear()
 	txt.Color = clr
 	txt.Dot = vec

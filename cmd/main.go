@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	windowRect pixel.Rect = pixel.R(0, 0, 940, 940)
-	ssmRect    pixel.Rect = pixel.R(60.1, 60.1, 880, 880)
+	windowRect pixel.Rect = pixel.R(0, 0, 1200, 900)
+	ssmRect    pixel.Rect = pixel.R(60.1, 60.1, 1140, 840)
 )
 
 func main() {
@@ -18,27 +18,11 @@ func main() {
 
 func run() {
 
-	// midiOutput, err := output.NewMidiOutput()
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// defer midiOutput.Driver.Close()
-
-	pattern := []string{
-		"E", "G", "B", "B", "B",
-		"A", "C", "B", "A", "G", "G",
-		"A", "B", "G", "E", "G", "A", "F#", "E", "D", "E", "E",
-	}
-
-	// pattern := []string{
-	// 	"C", "C", "F", "F", "C", "C", "G", "G",
-	// 	"C", "C", "C", "C", "C", "C", "G", "C",
-	// }
+	pattern := []rune{}
 
 	// UI
-	win := ui.NewWindow(windowRect)
+	win := ui.NewWindow("Self-similarity Matrix (SSM)", windowRect)
 	ssm := ui.NewSSM(ssmRect, pattern)
-
 	imdBatch := imdraw.New(nil)
 
 	for !win.Closed() {
@@ -47,8 +31,25 @@ func run() {
 		win.Clear(ui.ColorBackground)
 		imdBatch.Clear()
 
-		// Update
-		ssm.Update(win)
+		// Get typed input
+		for _, r := range win.Typed() {
+			pattern = append(pattern, r)
+		}
+		// Listen for backspace
+		if win.JustPressed(pixelgl.KeyBackspace) || win.Repeated(pixelgl.KeyBackspace) {
+			if len(pattern) > 0 {
+				pattern = pattern[:len(pattern)-1]
+			}
+		}
+		// Listen for escape
+		if win.JustPressed(pixelgl.KeyEscape) {
+			pattern = []rune{}
+		}
+
+		// If the new pattern is not equal to the old pattern, update the SSM
+		if patternsAreNotEqual(ssm.Pattern, pattern) {
+			ssm.Update(pattern)
+		}
 
 		// Draw to batch
 		ssm.DrawTo(imdBatch)
@@ -62,4 +63,16 @@ func run() {
 		// Update window
 		win.Update()
 	}
+}
+
+func patternsAreNotEqual(a, b []rune) bool {
+	if len(a) != len(b) {
+		return true
+	}
+	for x := range a {
+		if a[x] != b[x] {
+			return true
+		}
+	}
+	return false
 }

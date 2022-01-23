@@ -3,13 +3,11 @@ package ui
 import "image/color"
 
 var (
-	ColorBackground            = color.RGBA{0xd0, 0xd0, 0xd0, 255}
-	ColorBlockSystemOff        = color.RGBA{0xf0, 0xf0, 0xf0, 255}
-	ColorBlockSystemOn         = color.RGBA{0x10, 0x10, 0x10, 255}
-	ColorBlockSystemOnDiagonal = color.RGBA{0x50, 0x50, 0x50, 255}
-	ColorBlockSystemOnUnique   = color.RGBA{0xc0, 0x40, 0x40, 255}
-	ColorBlockUserOff          = color.RGBA{0x58, 0x5b, 0x56, 255}
-	ColorBlockUserOn           = color.RGBA{0x00, 0xc8, 0x57, 255}
-	ColorGridLines             = color.RGBA{0xc0, 0xc0, 0xc0, 255}
-	ColorText                  = color.RGBA{0x10, 0x10, 0x10, 255}
+	ColorBackground            = color.RGBA{255, 255, 255, 255}
+	ColorBlockSystemOn         = color.RGBA{0, 0, 0, 255}
+	ColorBlockSystemOnDiagonal = color.RGBA{200, 200, 200, 255}
+	ColorBlockSystemOnUnique   = color.RGBA{200, 20, 20, 255}
+	ColorBlockSystemOnSpace    = color.RGBA{234, 234, 234, 255}
+	ColorGridLines             = color.RGBA{230, 230, 230, 255}
+	ColorText                  = color.RGBA{0, 0, 0, 255}
 )
