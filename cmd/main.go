@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
@@ -18,7 +20,8 @@ func main() {
 
 func run() {
 
-	pattern := []rune{}
+	typedStr := ""
+	pattern := []string{}
 
 	// UI
 	win := ui.NewWindow("Self-similarity Matrix (SSM)", windowRect)
@@ -27,29 +30,34 @@ func run() {
 
 	for !win.Closed() {
 
-		// Clear
-		win.Clear(ui.ColorBackground)
-		imdBatch.Clear()
-
 		// Get typed input
 		for _, r := range win.Typed() {
-			pattern = append(pattern, r)
+			typedStr += string(r)
+			pattern = strings.Fields(typedStr)
 		}
 		// Listen for backspace
 		if win.JustPressed(pixelgl.KeyBackspace) || win.Repeated(pixelgl.KeyBackspace) {
-			if len(pattern) > 0 {
-				pattern = pattern[:len(pattern)-1]
+			if len(typedStr) > 0 {
+				typedStr = typedStr[:len(typedStr)-1]
+				pattern = strings.Fields(typedStr)
 			}
 		}
 		// Listen for escape
 		if win.JustPressed(pixelgl.KeyEscape) {
-			pattern = []rune{}
+			typedStr = ""
+			pattern = []string{}
 		}
 
 		// If the new pattern is not equal to the old pattern, update the SSM
 		if patternsAreNotEqual(ssm.Pattern, pattern) {
 			ssm.Update(pattern)
 		}
+
+		// Clear
+		win.Clear(ui.ColorBackground)
+
+		// Clear the batch
+		imdBatch.Clear()
 
 		// Draw to batch
 		ssm.DrawTo(imdBatch)
@@ -65,7 +73,7 @@ func run() {
 	}
 }
 
-func patternsAreNotEqual(a, b []rune) bool {
+func patternsAreNotEqual(a, b []string) bool {
 	if len(a) != len(b) {
 		return true
 	}

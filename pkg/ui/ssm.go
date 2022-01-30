@@ -11,11 +11,11 @@ type SSM struct {
 	Text        *Typography
 	Rect        pixel.Rect
 	isComposing bool
-	Pattern     []rune
+	Pattern     []string
 	Grid        [][]uint32
 }
 
-func NewSSM(rect pixel.Rect, pattern []rune) *SSM {
+func NewSSM(rect pixel.Rect, pattern []string) *SSM {
 
 	ssm := &SSM{
 		Imd:     imdraw.New(nil),
@@ -62,7 +62,7 @@ func (ssm *SSM) Compose() {
 			}
 
 			// spaces
-			if xPattern[x] == ' ' {
+			if xPattern[x] == " " {
 				ssm.Imd.Color = ColorBlockSystemOnSpace
 			}
 
@@ -124,14 +124,14 @@ func (ssm *SSM) Compose() {
 	for x := range ssm.Grid {
 		str := ssm.Pattern[x]
 		strX := ssm.Rect.Min.X + float64(x)*blockW + blockW/2
-		ssm.Text.DrawRuneToBatch(str, pixel.V(strX, 30), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
-		ssm.Text.DrawRuneToBatch(str, pixel.V(strX, ssm.Rect.Max.Y+20), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
+		ssm.Text.DrawStringToBatch(str, pixel.V(strX, 30), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
+		ssm.Text.DrawStringToBatch(str, pixel.V(strX, ssm.Rect.Max.Y+20), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
 	}
 	for y := range ssm.Grid {
 		str := ssm.Pattern[y]
 		strY := ssm.Rect.Max.Y - (float64(y) * blockH) - blockH/2
-		ssm.Text.DrawRuneToBatch(str, pixel.V(30, strY), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
-		ssm.Text.DrawRuneToBatch(str, pixel.V(ssm.Rect.Max.X+20, strY), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
+		ssm.Text.DrawStringToBatch(str, pixel.V(30, strY), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
+		ssm.Text.DrawStringToBatch(str, pixel.V(ssm.Rect.Max.X+20, strY), ColorText, ssm.Text.TxtBatch, ssm.Text.Txt)
 	}
 
 	if len(ssm.Pattern) == 0 {
@@ -143,7 +143,7 @@ func (ssm *SSM) Compose() {
 	ssm.isComposing = false
 }
 
-func (ssm *SSM) Update(newPattern []rune) {
+func (ssm *SSM) Update(newPattern []string) {
 	ssm.Pattern = newPattern
 	ssm.Clear()
 	ssm.Compose()
@@ -161,7 +161,7 @@ func (ssm *SSM) DrawTextTo(win *pixelgl.Window) {
 	}
 }
 
-func unique(needle rune, haystack []rune) bool {
+func unique(needle string, haystack []string) bool {
 	count := int32(0)
 	for i := range haystack {
 		if haystack[i] == needle {
